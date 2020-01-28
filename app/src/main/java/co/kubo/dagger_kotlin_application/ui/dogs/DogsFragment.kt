@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import co.kubo.dagger_kotlin_application.R
 import co.kubo.dagger_kotlin_application.base.BaseFragment
@@ -23,6 +25,8 @@ class DogsFragment : BaseFragment() {
     lateinit var txtLoading: TextView
     @BindView(R.id.txtSuccess)
     lateinit var txtSuccess: TextView
+    @BindView(R.id.recyclerDogs)
+    lateinit var recyclerDogs: RecyclerView
 
     var viewModelFactory: ViewModelFactory? = null
         @Inject set
@@ -38,6 +42,8 @@ class DogsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         dogsViewModel = ViewModelProviders.of(this, viewModelFactory).get(DogsViewModel::class.java)
+        recyclerDogs.layoutManager = LinearLayoutManager(activity!!)
+        recyclerDogs.adapter = DogsAdapter(dogsViewModel, viewLifecycleOwner)
         observableViewModel()
     }
 
@@ -55,6 +61,7 @@ class DogsFragment : BaseFragment() {
         dogsViewModel.getDogs().observe(viewLifecycleOwner, Observer { dogs ->
             run {
                 if (dogs != null) {
+                    recyclerDogs.visibility = View.VISIBLE
                     txtSuccess.visibility = View.VISIBLE
                     txtSuccess.text = "Success"
                 } else {
@@ -67,6 +74,7 @@ class DogsFragment : BaseFragment() {
         dogsViewModel.getError().observe(viewLifecycleOwner, Observer { isError ->
             run {
                 if (isError) {
+                    recyclerDogs.visibility = View.GONE
                     txtError.visibility = View.VISIBLE
                     txtError.text = "Error"
                 } else {
@@ -79,6 +87,7 @@ class DogsFragment : BaseFragment() {
         dogsViewModel.getLoading().observe(viewLifecycleOwner, Observer { isLoading ->
             run {
                 if (isLoading) {
+                    recyclerDogs.visibility = View.GONE
                     txtLoading.visibility = View.VISIBLE
                     txtLoading.text = "Loading..."
                 } else {
