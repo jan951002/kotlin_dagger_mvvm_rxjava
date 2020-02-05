@@ -13,12 +13,14 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        /*
         val dogsFragment = DogsFragment()
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         fragmentTransaction.add(R.id.frameContent, dogsFragment)
         fragmentTransaction.commit()
+
+        */
     }
 }
