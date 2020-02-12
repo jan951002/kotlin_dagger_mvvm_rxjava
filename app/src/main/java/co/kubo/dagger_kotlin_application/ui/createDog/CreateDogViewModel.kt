@@ -1,4 +1,4 @@
-package co.kubo.dagger_kotlin_application.ui.dogs
+package co.kubo.dagger_kotlin_application.ui.createDog
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,46 +11,41 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+class CreateDogViewModel @Inject constructor(private val dogApi: DogApi) : ViewModel() {
 
-class DogsViewModel @Inject constructor(private val dogApi: DogApi) : ViewModel() {
+    private var disposable: CompositeDisposable? = CompositeDisposable()
 
-    private var disposable: CompositeDisposable?
-
-    private val dogs = MutableLiveData<List<Dog>>()
-    private val dogsLoadError = MutableLiveData<Boolean>()
+    private val createdDog = MutableLiveData<Dog>()
+    private val createDogError = MutableLiveData<Boolean>()
     private val loading = MutableLiveData<Boolean>()
 
-    init {
-        this.disposable = CompositeDisposable()
-        fetchDogs()
-    }
 
-    fun getDogs(): LiveData<List<Dog>> {
-        return dogs
+    fun getDogs(): LiveData<Dog> {
+        return createdDog
     }
 
     fun getError(): LiveData<Boolean> {
-        return dogsLoadError
+        return createDogError
     }
 
     fun getLoading(): LiveData<Boolean> {
         return loading
     }
 
-    private fun fetchDogs() {
+    fun createDog(name: String, year: String) {
         loading.value = true
         disposable?.add(
-            dogApi.getDogs().subscribeOn(Schedulers.io())
+            dogApi.createDog(name, year).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<Dog>>() {
-                    override fun onSuccess(value: List<Dog>) {
-                        dogsLoadError.value = false
-                        dogs.value = value
+                .subscribeWith(object : DisposableSingleObserver<Dog>() {
+                    override fun onSuccess(t: Dog) {
+                        createDogError.value = false
+                        createdDog.value = t
                         loading.value = false
                     }
 
                     override fun onError(e: Throwable) {
-                        dogsLoadError.value = true
+                        createDogError.value = true
                         loading.value = false
                     }
 

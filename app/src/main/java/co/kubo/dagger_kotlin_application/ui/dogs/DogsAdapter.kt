@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.Nullable
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +15,7 @@ import co.kubo.dagger_kotlin_application.R2
 import co.kubo.dagger_kotlin_application.data.model.Dog
 
 
-class DogsAdapter(private val dogsViewModel: DogsViewModel, lifecycleOwner: LifecycleOwner) :
+class DogsAdapter(dogsViewModel: DogsViewModel, lifecycleOwner: LifecycleOwner) :
     RecyclerView.Adapter<DogsAdapter.ViewHolder>() {
 
     private val data = ArrayList<Dog>()
@@ -49,8 +50,10 @@ class DogsAdapter(private val dogsViewModel: DogsViewModel, lifecycleOwner: Life
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         @BindView(R.id.txtName)
+        @Nullable
         lateinit var txtName: TextView
         @BindView(R.id.txtYears)
+        @Nullable
         lateinit var txtYears: TextView
 
         init {

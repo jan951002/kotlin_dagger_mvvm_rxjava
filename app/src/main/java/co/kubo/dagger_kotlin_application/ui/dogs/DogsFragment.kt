@@ -8,43 +8,44 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import co.kubo.dagger_kotlin_application.R
 import co.kubo.dagger_kotlin_application.base.BaseFragment
 import co.kubo.dagger_kotlin_application.factory.ViewModelFactory
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.fragment_dogs.*
 import javax.inject.Inject
 
 
 class DogsFragment : BaseFragment() {
 
-    @BindView(R.id.txtError)
-    lateinit var txtError: TextView
-    @BindView(R.id.txtLoading)
-    lateinit var txtLoading: TextView
-    @BindView(R.id.txtSuccess)
-    lateinit var txtSuccess: TextView
-    @BindView(R.id.recyclerDogs)
-    lateinit var recyclerDogs: RecyclerView
-
     var viewModelFactory: ViewModelFactory? = null
         @Inject set
     private lateinit var dogsViewModel: DogsViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun layoutRes(): Int {
         return R.layout.fragment_dogs
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         dogsViewModel = ViewModelProviders.of(this, viewModelFactory).get(DogsViewModel::class.java)
         recyclerDogs.layoutManager = LinearLayoutManager(activity!!)
         recyclerDogs.adapter = DogsAdapter(dogsViewModel, viewLifecycleOwner)
+        btnCreateDogNavigation.setOnClickListener { v ->
+            Navigation.findNavController(v).navigate(R.id.action_dogsFragment_to_createDogFragment)
+        }
+    }
+
+    override fun onResume() {
         observableViewModel()
+        super.onResume()
     }
 
     override fun onAttach(context: Context) {
